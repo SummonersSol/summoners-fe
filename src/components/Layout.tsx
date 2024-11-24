@@ -96,7 +96,7 @@ const Wrapped = ({
                     relative
                 `}>
                     <DynamicBackground />
-                    <Header forceShow={true}/>
+                    <Header show={pathname !== "/"}/>
                     <div className='w-screen h-full'>
                         {children}
                     </div>

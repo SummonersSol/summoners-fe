@@ -145,7 +145,9 @@ const UserStateProvider = ({
     // initialize
     const init = useCallback(async(customSignature?: string) => {
         if(!auth.address) {
-            setIsVerifying(false);
+            setTimeout(() => {
+                setIsVerifying(false);
+            }, 1300);
             return;
         }
 

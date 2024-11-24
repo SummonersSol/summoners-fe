@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import Icon from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const NavigateButton = ({href, title}: {href: string; title: string;}) => {
     return (
@@ -29,7 +31,16 @@ const NavigateButton = ({href, title}: {href: string; title: string;}) => {
 }
 
 const Home = () => {
-    const {user} = useUserState();
+    const { user } = useUserState();
+    const router = useRouter();
+
+    useEffect(() => {
+        if(user.address) {
+            return;
+        }
+
+        router.push('/');
+    }, [user.address, router]);
 
     return (
 		<div className={`
@@ -40,6 +51,10 @@ const Home = () => {
 			{
 				user?.address &&
 				<>
+                    <NavigateButton
+                        href='/courses'
+                        title='Courses'
+                    />
                     <NavigateButton
                         href='/map'
                         title='Travel'
@@ -58,10 +73,6 @@ const Home = () => {
                     />
 				</>
 			}
-            {
-                !user?.address &&
-                <div>You needa login</div>
-            }
 		</div>
 	)
 }

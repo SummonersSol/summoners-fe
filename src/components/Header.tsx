@@ -1,11 +1,11 @@
 'use client';
 import { UnifiedWalletButton } from './UnifiedWalletButton';
 
-const Header = ({forceShow}: {forceShow: boolean}) => {
+const Header = ({show}: {show: boolean}) => {
 	// default header
     return (
       <div className={`
-        flex flex-row justify-center
+        ${show? 'flex': 'hidden'} flex-row justify-center
         fixed top-0 z-[55] py-3 right-[143px]
       `}
       style={{

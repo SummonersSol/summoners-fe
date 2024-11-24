@@ -6,19 +6,34 @@ import { useUserState } from "@/providers/userStateProvider";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
 import { Nanum_Brush_Script } from "next/font/google";
+import { useUnifiedWalletContext } from "@jup-ag/wallet-adapter";
 const nanum = Nanum_Brush_Script({ subsets: ['latin'], weight: '400' });
 
 
 const Page = () => {
+    const { user, isVerifying } = useUserState();
     const router = useRouter();
     const [showButton, setShowButton] = useState(true);
+    const { setShowModal } = useUnifiedWalletContext();
 
     const enterRealm = useCallback(() => {
+        if(isVerifying) {
+            return;
+        }
+
+        setShowModal(true);
+    }, [isVerifying, setShowModal]);
+
+    useEffect(() => {
+        if(!user || !user.address) {
+            return;
+        }
+
         setShowButton(false);
         setTimeout(() => {
             router.push('/home');
         }, 500);
-    }, [router]);
+    }, [user, router]);
 
     return (
         <div className="h-full w-full flex items-center justify-center">
@@ -82,7 +97,7 @@ const Page = () => {
                         ${nanum.className}
                     `}    
                 >
-                    <span>Enter</span>
+                    <span>{isVerifying? 'Loading..' : 'Enter'}</span>
                 </button>
             }
         </div>
