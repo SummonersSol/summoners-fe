@@ -1,7 +1,9 @@
 'use client';
+import { useUserState } from '@/providers/userStateProvider';
 import { UnifiedWalletButton } from './UnifiedWalletButton';
 
 const Header = ({show}: {show: boolean}) => {
+  const {user} = useUserState();
 	// default header
     return (
       <div className={`
@@ -12,9 +14,12 @@ const Header = ({show}: {show: boolean}) => {
         zIndex: 99
       }}>
         
-        <div className='flex flex-row items-center justify-end'>
-			<UnifiedWalletButton/>
-		</div>
+        <div className='flex flex-row items-center justify-end space-x-3'>
+          <div className="rounded px-2 py-1">
+            <strong className="text-center">{user?.exp} XP</strong>
+          </div>
+          <UnifiedWalletButton/>
+        </div>
       </div>
     )
 }

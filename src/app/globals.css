@@ -20,6 +20,17 @@
       padding: revert;
   }
 
+  .markdown a {
+    border-radius: 5px;
+    padding: 5px;
+    color: black;
+    background-color: white;
+  }
+
+  .markdown img {
+    max-width: 80vw;
+  }
+
   @font-face {
     font-family: 'Press Start 2P';
     font-style: normal;

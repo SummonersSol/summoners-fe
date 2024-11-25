@@ -6,7 +6,9 @@ export type ApiResult<T> = {
 
 export type User = {
     id: number;
+    name: string;
     address: string;
+    exp: number;
     created_at: string;
     last_connected_at: string;
 }

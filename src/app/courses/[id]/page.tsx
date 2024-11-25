@@ -2,28 +2,28 @@
 import BackButton from "@/components/BackButton";
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { ProcessedCourse } from "@/@types/courses/types";
 import { useUserState } from "@/providers/userStateProvider";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { CourseWithLessons, ProcessedLesson } from "@/@types/courses/types";
 import axios from "@/services/axios";
-import { ApiResult } from "@/providers/types";
 import Spinner from "@/components/Spinner";
 
-const CourseButton = ({href, course} : {href: string, course: ProcessedCourse}) => {
+const LessonButton = ({href, lesson} : {href: string, lesson: ProcessedLesson }) => {
     const pct = useMemo(() => {
-        if(course.completed_pages === 0) return 0;
-        return (course.completed_pages / course.total_pages) * 100;
-    }, [course]);
+        if(lesson.completed_pages === 0) return 0;
+        return (lesson.completed_pages / lesson.total_pages) * 100;
+    }, [lesson]);
+
     return (
         <Link 
             className={`
-                h-[200px] w-full rounded-lg
+                w-full rounded-lg
                 flex flex-col bg-orange-100 p-3 border-[3px] border-black
             `}
             href={href}
         >
             <div className="flex flex-row justify-between">
-                <strong>{course.name}</strong>
+                <strong>{lesson.name} ({lesson.exp}XP)</strong>
                 <div className="flex flex-row items-center space-x-3">
                     <div className="flex w-full justify-end">
                         <strong>{pct.toFixed(0)}%</strong>
@@ -33,23 +33,16 @@ const CourseButton = ({href, course} : {href: string, course: ProcessedCourse}) 
                     </div>
                 </div>
             </div>
-            <div className="my-3 flex flex-1 items-center justify-center">
-                <span>{course.description}</span>
-            </div>
-
-            <div className="flex flex-row w-full justify-end">
-                <div className="text-green-700">START</div>
-            </div>
         </Link>
     )
 }
 
 
-const Page = () => {
+const Page = ({params: { id }}: { params: { id: number }}) => {
     const router = useRouter();
     const { user } = useUserState();
     const [isLoading, setIsLoading] = useState(false);
-    const [courses, setCourses] = useState<ProcessedCourse[]>([]);
+    const [course, setCourse] = useState<CourseWithLessons>();
 
     const getData = useCallback(async() => {
         if(!user.address) {
@@ -58,18 +51,17 @@ const Page = () => {
 
         setIsLoading(true);
         try {
-            let res = await axios.post<ProcessedCourse[]>('/courses', { address: user.address });
-            console.log(res.data);
-            setCourses(res.data);
+            let res = await axios.post<CourseWithLessons>(`/courses/${id}`, { address: user.address });
+            setCourse(res.data);
         }
 
         catch(e) {
             console.log(e);
-            setCourses([]);
+            setCourse(undefined);
         }
         setIsLoading(false);
 
-    }, [user.address]);
+    }, [user.address, id]);
 
     useEffect(() => {
         getData();
@@ -89,14 +81,14 @@ const Page = () => {
             />
             <div className="w-[80vw] max-w-[800px] h-[80vh]">
                 <BackButton
-                    onButtonClick={() => { router.push('/home'); }}
+                    onButtonClick={() => { router.push('/courses'); }}
                 />
                 {
-                    courses.map(x => (
-                        <CourseButton 
-                            key={`courses-${x.id}`} 
-                            href={`courses/${x.id}`}
-                            course={x}
+                    course?.lessons?.map(x => (
+                        <LessonButton 
+                            key={`lesson-${x.id}`}
+                            href={`/lessons/${x.id}`}
+                            lesson={x}
                         />
                     ))
                 }

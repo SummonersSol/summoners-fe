@@ -1,29 +1,25 @@
-import { mdiChevronLeft } from '@mdi/js';
+import { mdiChevronRight } from '@mdi/js';
 import Icon from '@mdi/react';
 
-const BackButton = ({onButtonClick, className}: {onButtonClick: () => void; className?: string;}) => {
+const NextButton = ({onButtonClick, className}: {onButtonClick: () => void; className?: string;}) => {
     return (
         <button 
             className={`
-                back-button flex flex-row items-center
+                back-button flex flex-row items-center justify-end
                 bg-transparent border-none
                 text-[20px] font-starguard ${className}
             `}
             onClick={onButtonClick}
         >
-            <Icon
-                path={mdiChevronLeft}
-                size={1}
-            />
             <span className={`
-                    ml-[10px] uppercase
+                    uppercase
                     tracking-[3px]
                 `}
             >
-                Back
+                Home
             </span>
         </button>
     )
 }
 
-export default BackButton;
+export default NextButton;

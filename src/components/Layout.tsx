@@ -96,7 +96,7 @@ const Wrapped = ({
                     relative
                 `}>
                     <DynamicBackground />
-                    <Header show={pathname !== "/"}/>
+                    <Header show={pathname !== "/" && !pathname.includes("/lessons")}/>
                     <div className='w-screen h-full'>
                         {children}
                     </div>
