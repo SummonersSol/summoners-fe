@@ -32,15 +32,6 @@ const NavigateButton = ({href, title}: {href: string; title: string;}) => {
 
 const Home = () => {
     const { user } = useUserState();
-    const router = useRouter();
-
-    useEffect(() => {
-        if(user.address) {
-            return;
-        }
-
-        router.push('/');
-    }, [user.address, router]);
 
     return (
 		<div className={`

@@ -1,13 +1,13 @@
 import { mdiChevronLeft } from '@mdi/js';
 import Icon from '@mdi/react';
 
-const BackButton = ({onButtonClick}: {onButtonClick: () => void}) => {
+const BackButton = ({onButtonClick, className}: {onButtonClick: () => void; className?: string;}) => {
     return (
         <button 
             className={`
                 back-button flex flex-row items-center
                 bg-transparent border-none
-                text-[20px] w-[150px] font-starguard
+                text-[20px] w-[150px] font-starguard ${className}
             `}
             onClick={onButtonClick}
         >

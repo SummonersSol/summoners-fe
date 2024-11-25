@@ -16,6 +16,8 @@ const pagesWithMask = [
     '/inventory',
     '/history',
     '/battleResult',
+    '/courses',
+    '/lessons',
 ];
 
 const Component = () => {
@@ -31,7 +33,7 @@ const Component = () => {
     }, [pathname]);
 
     return (
-        <div className="fixed inset-0 z-[0]">
+        <div className="fixed inset-0 z-[-1]">
             {
                 shouldMask &&
                 <div className="absolute inset-0 bg-black/30">

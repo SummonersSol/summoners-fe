@@ -6,7 +6,8 @@ interface P{
     show: boolean,
     mode: "light" | "dark" | "white",
     type: "pulse" | "rotate" | "propagate" | "scale" | "clip" | "bridging" | "packing",
-    text: string
+    text: string;
+    textColor?: string;
     fullScreen?: boolean;
 }
 interface S{}
@@ -71,7 +72,7 @@ export default class Spinner extends React.Component<P,S> {
         }
 
         return (
-            <div className='spinner'>
+            <div className='spinner' style={{color: this.props.textColor}}>
                 <div>{text}</div>
                 {dom}
             </div>

@@ -65,30 +65,35 @@ const Battle = () => {
         }
 
     }, [user.address]);
-    
 
-    //handle socket connections and clean up
-    useEffect(() => {
-        if(!user.address) {
+    const attack = useCallback((address: string, monsterId: number, skillId: number) => {
+        if(!socketRef.current) {
             return;
+        }
+
+        socketRef.current.emit(`battle_${address}`, {
+            type: "player_attack",
+            value: {
+                id: monsterId,
+                skill_id: skillId,
+            }
+        });
+    }, []);
+
+    const surrender = useCallback((address: string, ignoreConfirm = false) => {
+        if(!ignoreConfirm) {
+            if(!window.confirm('Surrender?')) return;
         }
 
         if(!socketRef.current) {
             return;
         }
 
-        if(socketRef.current.disconnected) {
-            socketRef.current.connect();
-        }
-
-        return () => {
-            if(!isInBattle.current || isNaturalBattleEnd.current) {
-                return;
-            }
-
-            surrender(user.address, true);
-        }
-    }, [user.address]);
+        socketRef.current.emit(`battle_${address}`, {
+            type: "flee",
+            value: { address }
+        });
+    }, []);
 
     //for cd animations
     const setCdTimers = useCallback((cd: number) => {
@@ -183,21 +188,6 @@ const Battle = () => {
         }
     }, []);
 
-    const surrender = useCallback((address: string, ignoreConfirm = false) => {
-        if(!ignoreConfirm) {
-            if(!window.confirm('Surrender?')) return;
-        }
-
-        if(!socketRef.current) {
-            return;
-        }
-
-        socketRef.current.emit(`battle_${address}`, {
-            type: "flee",
-            value: { address }
-        });
-    }, []);
-
     const listenToBattle = useCallback(({
         address,
         onLoad,
@@ -267,22 +257,7 @@ const Battle = () => {
             socketRef.current!.off('battle_lost');
             socketRef.current!.off('battle_won');
         };
-    }, []);
-
-    const attack = useCallback((address: string, monsterId: number, skillId: number) => {
-        if(!socketRef.current) {
-            return;
-        }
-
-        socketRef.current.emit(`battle_${address}`, {
-            type: "player_attack",
-            value: {
-                id: monsterId,
-                skill_id: skillId,
-            }
-        });
-    }, []);
-
+    }, [attack]);
 
     //constantly listen to events
     useEffect(() => {
@@ -303,8 +278,31 @@ const Battle = () => {
             onEndSkillsReceived,
             onMonsterOffCd
         });
-    }, [user.address, onBattleEnd, onDamageReceived, onEncounterReceivedDamage, onMonsterOffCd, setCdTimers]);
+    }, [user.address, onBattleEnd, onDamageReceived, onEncounterReceivedDamage, onMonsterOffCd, setCdTimers, listenToBattle]);
 
+
+    //handle socket connections and clean up
+    useEffect(() => {
+        if(!user.address) {
+            return;
+        }
+
+        if(!socketRef.current) {
+            return;
+        }
+
+        if(socketRef.current.disconnected) {
+            socketRef.current.connect();
+        }
+
+        return () => {
+            if(!isInBattle.current || isNaturalBattleEnd.current) {
+                return;
+            }
+
+            surrender(user.address, true);
+        }
+    }, [user.address, surrender]);
 
     useEffect(() => {
         if(isInBattle.current) {
@@ -326,7 +324,7 @@ const Battle = () => {
         startBattle({
             address: user.address,
         });
-    }, [user.address]);
+    }, [user.address, startBattle]);
 
     return (
         <div className='battle-page'>
@@ -509,7 +507,7 @@ const BattlePage = ({
         return () => {
             document.removeEventListener("keydown", listener);
         };
-    }, [activeMonsterId, details, address, onSkillClick]);
+    }, [activeMonsterId, details, address, onSkillClick, attack]);
 
     // set monster count
     useEffect(() => {
@@ -523,7 +521,7 @@ const BattlePage = ({
     // surrender
     const onSurrender = useCallback(() => {
         surrender(address);
-    }, [address]);
+    }, [address, surrender]);
 
     if(!details) {
         return null;

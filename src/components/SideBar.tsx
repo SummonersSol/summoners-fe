@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import moment from 'moment';
@@ -88,10 +88,11 @@ const SideBar = ({ isActive, onCloseClick, onWalletButtonClick }: SidebarParams)
     const [isSettingOpen, setIsSettingOpen] = useState(false);
     const [hasInit, setHasInit] = useState(false);
     // const pathname = usePathname();
-    const { user, clear, init } = useUserState();
+    const { user, clear, init, isVerifying } = useUserState();
     const wallet = useWallet();
     // const isGettingData = useRef(false);
     const isIniting = useRef<boolean>(false);
+    const router = useRouter();
 
     // useEffect(() => {
     //   if(!wallet.connected) {
@@ -204,6 +205,18 @@ const SideBar = ({ isActive, onCloseClick, onWalletButtonClick }: SidebarParams)
 
         askForSignature();
     }, [user, init, wallet, clear, onCloseClick]);
+
+    useEffect(() => {
+        if(isVerifying) {
+          return;
+        }
+
+        if(user.address) {
+            return;
+        }
+
+        router.push('/');
+    }, [user.address, router, isVerifying]);
 
     return null;
 }

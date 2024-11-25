@@ -20,6 +20,7 @@ const nextConfig = {
     eslint: {
       dirs: ["src"],
     },
+    transpilePackages: ["next-mdx-remote"],
 }
 
 module.exports = nextConfig
