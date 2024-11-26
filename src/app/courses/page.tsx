@@ -80,13 +80,13 @@ const Page = () => {
             flex flex-col justify-center items-center
             h-screen w-screen
         `}>
-            <Spinner
+            {/* <Spinner
                 fullScreen
                 mode='dark'
                 show={isLoading}
                 type="pulse"
                 text='Loading'
-            />
+            /> */}
             <div className="w-[80vw] max-w-[800px] h-[80vh]">
                 <BackButton
                     onButtonClick={() => { router.push('/home'); }}

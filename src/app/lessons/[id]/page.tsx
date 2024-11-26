@@ -176,17 +176,14 @@ const Page = ({params: { id }}: {params: { id: number }}) => {
             bg-slate-800 text-white
             no-tailwindcss-base markdown
         `}>
-            {
-                isLoading &&
-                <Spinner
-                    fullScreen
-                    mode='dark'
-                    textColor='black'
-                    show={isLoading}
-                    type="pulse"
-                    text='Loading'
-                />
-            }
+            {/* <Spinner
+                fullScreen
+                mode='dark'
+                textColor='black'
+                show={isLoading}
+                type="pulse"
+                text='Loading'
+            /> */}
             <div className="flex relative items-start justify-between w-[80vw] max-w-[1200px]">
                 <HomeButton 
                     onButtonClick={() => { router.push('/home'); }}
